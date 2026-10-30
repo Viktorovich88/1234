@@ -1,1 +1,142 @@
 @import "tailwindcss";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .dark body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+
+  .light body {
+    background-color: #f8fafc;
+    color: #1e293b;
+  }
+}
+
+@layer components {
+  .sidebar {
+    @apply w-64 min-h-screen border-r flex flex-col transition-all duration-200;
+  }
+
+  .dark .sidebar {
+    @apply border-slate-700 bg-slate-900;
+  }
+
+  .light .sidebar {
+    @apply border-slate-200 bg-white;
+  }
+
+  .topbar {
+    @apply h-16 border-b flex items-center px-4 gap-3 sticky top-0 z-10;
+  }
+
+  .dark .topbar {
+    @apply border-slate-700 bg-slate-900/95 backdrop-blur;
+  }
+
+  .light .topbar {
+    @apply border-slate-200 bg-white/95 backdrop-blur;
+  }
+
+  .file-card {
+    @apply rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg;
+  }
+
+  .dark .file-card {
+    @apply border-slate-700 bg-slate-800 hover:border-indigo-500;
+  }
+
+  .light .file-card {
+    @apply border-slate-200 bg-white hover:border-indigo-400;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors;
+  }
+
+  .dark .btn-secondary {
+    @apply bg-slate-700 text-slate-200 hover:bg-slate-600;
+  }
+
+  .light .btn-secondary {
+    @apply bg-slate-100 text-slate-700 hover:bg-slate-200;
+  }
+
+  .input-field {
+    @apply px-3 py-2 rounded-lg border outline-none transition-colors focus:ring-2 focus:ring-indigo-500;
+  }
+
+  .dark .input-field {
+    @apply bg-slate-800 border-slate-600 text-slate-200 placeholder-slate-400;
+  }
+
+  .light .input-field {
+    @apply bg-white border-slate-300 text-slate-800 placeholder-slate-400;
+  }
+
+  .tag {
+    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .dark .tag {
+    @apply bg-slate-700 text-slate-300;
+  }
+
+  .light .tag {
+    @apply bg-indigo-100 text-indigo-700;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
+  }
+
+  .modal-content {
+    @apply rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto p-6;
+  }
+
+  .dark .modal-content {
+    @apply bg-slate-800 border border-slate-700;
+  }
+
+  .light .modal-content {
+    @apply bg-white border border-slate-200;
+  }
+
+  .drop-zone {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-indigo-600/20 backdrop-blur-sm border-4 border-dashed border-indigo-500;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-track {
+    background: #1e293b;
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 3px;
+  }
+
+  .light .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  .light .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+}
