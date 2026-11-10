@@ -7,7 +7,9 @@
   
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.3s, color 0.3s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   .dark body {
@@ -23,47 +25,29 @@
 
 @layer components {
   .sidebar {
-    @apply w-64 min-h-screen border-r flex flex-col transition-all duration-200;
-  }
-
-  .dark .sidebar {
-    @apply border-slate-700 bg-slate-900;
-  }
-
-  .light .sidebar {
-    @apply border-slate-200 bg-white;
+    @apply w-72 min-h-screen border-r flex flex-col transition-all duration-300;
   }
 
   .topbar {
     @apply h-16 border-b flex items-center px-4 gap-3 sticky top-0 z-10;
   }
 
-  .dark .topbar {
-    @apply border-slate-700 bg-slate-900/95 backdrop-blur;
-  }
-
-  .light .topbar {
-    @apply border-slate-200 bg-white/95 backdrop-blur;
-  }
-
   .file-card {
-    @apply rounded-xl border overflow-hidden cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-lg;
-  }
-
-  .dark .file-card {
-    @apply border-slate-700 bg-slate-800 hover:border-indigo-500;
-  }
-
-  .light .file-card {
-    @apply border-slate-200 bg-white hover:border-indigo-400;
+    @apply rounded-2xl border overflow-hidden cursor-pointer transition-all duration-300;
   }
 
   .btn-primary {
-    @apply px-4 py-2 rounded-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors;
+    @apply px-5 py-2.5 rounded-xl font-semibold text-white transition-all duration-200 hover:scale-[1.02];
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
   }
 
   .btn-secondary {
-    @apply px-4 py-2 rounded-lg font-medium transition-colors;
+    @apply px-5 py-2.5 rounded-xl font-semibold transition-all duration-200 hover:scale-[1.02];
   }
 
   .dark .btn-secondary {
@@ -75,23 +59,23 @@
   }
 
   .input-field {
-    @apply px-3 py-2 rounded-lg border outline-none transition-colors focus:ring-2 focus:ring-indigo-500;
+    @apply px-4 py-2.5 rounded-xl border outline-none transition-all duration-200 focus:ring-2;
   }
 
   .dark .input-field {
-    @apply bg-slate-800 border-slate-600 text-slate-200 placeholder-slate-400;
+    @apply bg-slate-800/50 border-slate-600 text-slate-200 placeholder-slate-400 focus:ring-indigo-500/50 focus:border-indigo-500;
   }
 
   .light .input-field {
-    @apply bg-white border-slate-300 text-slate-800 placeholder-slate-400;
+    @apply bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400 focus:ring-indigo-500/50 focus:border-indigo-500;
   }
 
   .tag {
-    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium transition-transform;
   }
 
   .dark .tag {
-    @apply bg-slate-700 text-slate-300;
+    @apply bg-slate-700/50 text-slate-300;
   }
 
   .light .tag {
@@ -99,15 +83,17 @@
   }
 
   .modal-overlay {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm;
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .modal-content {
     @apply rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto p-6;
+    animation: slideUp 0.3s ease-out;
   }
 
   .dark .modal-content {
-    @apply bg-slate-800 border border-slate-700;
+    @apply bg-slate-800 border border-slate-700/50;
   }
 
   .light .modal-content {
@@ -115,7 +101,8 @@
   }
 
   .drop-zone {
-    @apply fixed inset-0 z-50 flex items-center justify-center bg-indigo-600/20 backdrop-blur-sm border-4 border-dashed border-indigo-500;
+    @apply fixed inset-0 z-50 flex items-center justify-center border-4 border-dashed;
+    animation: fadeIn 0.2s ease-out;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -123,7 +110,7 @@
   }
 
   .dark .scrollbar-thin::-webkit-scrollbar-track {
-    background: #1e293b;
+    background: transparent;
   }
 
   .dark .scrollbar-thin::-webkit-scrollbar-thumb {
@@ -131,12 +118,85 @@
     border-radius: 3px;
   }
 
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+  }
+
   .light .scrollbar-thin::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: transparent;
   }
 
   .light .scrollbar-thin::-webkit-scrollbar-thumb {
     background: #cbd5e1;
     border-radius: 3px;
   }
+
+  .light .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+@layer utilities {
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 2s infinite;
+}
+
+/* Градиентный текст */
+.gradient-text {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Стеклянный эффект */
+.glass {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.light .glass {
+  background: rgba(255, 255, 255, 0.8);
 }

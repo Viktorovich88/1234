@@ -8,6 +8,7 @@ import { FileDetails } from './components/FileDetails';
 import { UploadZone } from './components/UploadZone';
 import { PortfolioModal } from './components/PortfolioModal';
 import { InstallPWA } from './components/InstallPWA';
+import { InstallGuide } from './components/InstallGuide';
 
 export default function App() {
   const { theme, init, sidebarOpen, showUpload, showPortfolio, showDetails, setShowUpload, addFile } = useStore();
@@ -98,6 +99,9 @@ export default function App() {
 
       {/* Компонент установки PWA */}
       <InstallPWA />
+      
+      {/* Инструкция по установке на телефон */}
+      <InstallGuide />
     </div>
   );
 }

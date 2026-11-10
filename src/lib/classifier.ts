@@ -1,11 +1,10 @@
-// Автоматическая классификация файлов по типу, папке и тегам
-
+// Расширенная классификация файлов — больше категорий
 import type { ClassificationRule } from './db';
 
 interface ClassifyInput {
   name: string;
   mime: string;
-  content?: string; // текстовое содержимое для анализа
+  content?: string;
 }
 
 interface ClassifyResult {
@@ -15,108 +14,182 @@ interface ClassifyResult {
   description: string;
 }
 
-// Маппинг MIME-типов к категориям
+// Расширенный маппинг MIME → категория
 const MIME_MAP: Record<string, string> = {
+  // Видео
   'video/mp4': 'video',
   'video/quicktime': 'video',
   'video/webm': 'video',
   'video/x-msvideo': 'video',
+  'video/x-matroska': 'video',
+  'video/avi': 'video',
+  'video/x-flv': 'video',
+  // Аудио
+  'audio/mpeg': 'audio',
+  'audio/wav': 'audio',
+  'audio/ogg': 'audio',
+  'audio/flac': 'audio',
+  'audio/aac': 'audio',
+  'audio/mp4': 'audio',
+  'audio/webm': 'audio',
+  'audio/x-m4a': 'audio',
+  // Изображения
   'image/jpeg': 'image',
   'image/png': 'image',
   'image/gif': 'image',
   'image/webp': 'image',
   'image/svg+xml': 'image',
   'image/bmp': 'image',
-  'application/pdf': 'doc',
-  'application/msword': 'doc',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'doc',
-  'text/plain': 'doc',
-  'text/markdown': 'doc',
-  'application/vnd.ms-excel': 'table',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'table',
-  'text/csv': 'table',
-  'application/zip': 'archive',
-  'application/x-rar-compressed': 'archive',
-  'application/x-7z-compressed': 'archive',
-  'application/gzip': 'archive',
+  'image/tiff': 'image',
+  'image/x-icon': 'image',
+  'image/vnd.adobe.photoshop': 'design',
+  // 3D графика
+  'model/gltf-binary': '3d',
+  'model/obj': '3d',
+  // Документы
+  'application/pdf': 'docs',
+  'application/msword': 'docs',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docs',
+  'text/plain': 'text',
+  'text/markdown': 'text',
+  'text/rtf': 'docs',
+  'application/rtf': 'docs',
+  // Презентации
+  'application/vnd.ms-powerpoint': 'presentation',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'presentation',
+  // Таблицы
+  'application/vnd.ms-excel': 'tables',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'tables',
+  'text/csv': 'tables',
+  // Дизайн
+  'application/vnd.adobe.photoshop': 'design',
+  'application/postscript': 'design',
+  'application/vnd.adobe.illustrator': 'design',
+  // Архивы
+  'application/zip': 'archives',
+  'application/x-rar-compressed': 'archives',
+  'application/x-7z-compressed': 'archives',
+  'application/gzip': 'archives',
+  'application/x-tar': 'archives',
+  // Шрифты
+  'font/woff': 'fonts',
+  'font/woff2': 'fonts',
+  'font/ttf': 'fonts',
+  'font/otf': 'fonts',
+  // CAD / чертежи
+  'application/vnd.dwg': 'cad',
+  'application/dxf': 'cad',
 };
 
-// Расширения файлов к категориям
+// Расширенный маппинг расширений
 const EXT_MAP: Record<string, string> = {
   // Видео
-  mp4: 'video', mov: 'video', webm: 'video', avi: 'video', mkv: 'video',
+  mp4: 'video', mov: 'video', webm: 'video', avi: 'video', mkv: 'video', flv: 'video', wmv: 'video', m4v: 'video',
+  // Аудио
+  mp3: 'audio', wav: 'audio', ogg: 'audio', flac: 'audio', aac: 'audio', m4a: 'audio', wma: 'audio', mid: 'audio', midi: 'audio',
   // Фото
-  jpg: 'image', jpeg: 'image', png: 'image', gif: 'image', webp: 'image', svg: 'image', bmp: 'image',
+  jpg: 'image', jpeg: 'image', png: 'image', gif: 'image', webp: 'image', svg: 'image', bmp: 'image', tiff: 'image', ico: 'image', heic: 'image', heif: 'image', raw: 'image', cr2: 'image', nef: 'image',
+  // 3D
+  glb: '3d', gltf: '3d', obj: '3d', fbx: '3d', blend: '3d', stl: '3d',
   // Документы
-  pdf: 'doc', doc: 'doc', docx: 'doc', txt: 'doc', md: 'doc', rtf: 'doc',
+  pdf: 'docs', doc: 'docs', docx: 'docs', rtf: 'docs', odt: 'docs', epub: 'docs', mobi: 'docs',
+  // Текст
+  txt: 'text', md: 'text', markdown: 'text', tex: 'text', log: 'text',
+  // Презентации
+  ppt: 'presentation', pptx: 'presentation', odp: 'presentation', key: 'presentation',
   // Таблицы
-  xlsx: 'table', xls: 'table', csv: 'table',
+  xlsx: 'tables', xls: 'tables', csv: 'tables', ods: 'tables', numbers: 'tables', tsv: 'tables',
   // Код
-  html: 'code', css: 'code', js: 'code', ts: 'code', tsx: 'code', jsx: 'code',
-  py: 'code', java: 'code', cpp: 'code', c: 'code', go: 'code', rs: 'code',
-  rb: 'code', php: 'code', swift: 'code', kt: 'code', sql: 'code',
-  json: 'code', xml: 'code', yaml: 'code', yml: 'code', toml: 'code',
-  sh: 'code', bash: 'code', ps1: 'code',
+  html: 'code', htm: 'code', css: 'code', scss: 'code', sass: 'code', less: 'code',
+  js: 'code', mjs: 'code', cjs: 'code', ts: 'code', tsx: 'code', jsx: 'code',
+  py: 'code', pyw: 'code', ipynb: 'code',
+  java: 'code', kt: 'code', kts: 'code', scala: 'code',
+  cpp: 'code', c: 'code', h: 'code', hpp: 'code', cs: 'code',
+  go: 'code', rs: 'code', rb: 'code', php: 'code', swift: 'code',
+  dart: 'code', lua: 'code', r: 'code', matlab: 'code',
+  sh: 'code', bash: 'code', zsh: 'code', fish: 'code', ps1: 'code', bat: 'code', cmd: 'code',
+  sql: 'code', graphql: 'code', gql: 'code',
+  // Данные
+  json: 'data', xml: 'data', yaml: 'data', yml: 'data', toml: 'data', ini: 'data', cfg: 'data', conf: 'data', env: 'data',
+  // Дизайн
+  psd: 'design', ai: 'design', sketch: 'design', fig: 'design', xd: 'design', afdesign: 'design',
   // Архивы
-  zip: 'archive', rar: 'archive', '7z': 'archive', gz: 'archive', tar: 'archive',
+  zip: 'archives', rar: 'archives', '7z': 'archives', gz: 'archives', tar: 'archives', bz2: 'archives', xz: 'archives', iso: 'archives', dmg: 'archives',
+  // Шрифты
+  woff: 'fonts', woff2: 'fonts', ttf: 'fonts', otf: 'fonts', eot: 'fonts',
+  // CAD
+  dwg: 'cad', dxf: 'cad', step: 'cad', iges: 'cad',
+  // Исполняемые
+  exe: 'executables', msi: 'executables', app: 'executables', deb: 'executables', rpm: 'executables', apk: 'executables',
 };
 
-// Языки программирования по расширению
+// Языки программирования
 const LANG_MAP: Record<string, string> = {
-  js: 'JavaScript', ts: 'TypeScript', py: 'Python', java: 'Java',
-  cpp: 'C++', c: 'C', go: 'Go', rs: 'Rust', rb: 'Ruby',
-  php: 'PHP', swift: 'Swift', kt: 'Kotlin', html: 'HTML',
-  css: 'CSS', sql: 'SQL', json: 'JSON', xml: 'XML',
-  yaml: 'YAML', yml: 'YAML', sh: 'Shell', bash: 'Bash',
-  tsx: 'React/TSX', jsx: 'React/JSX',
+  js: 'JavaScript', mjs: 'JavaScript', cjs: 'JavaScript',
+  ts: 'TypeScript', tsx: 'TypeScript/React', jsx: 'JavaScript/React',
+  py: 'Python', ipynb: 'Jupyter',
+  java: 'Java', kt: 'Kotlin', scala: 'Scala',
+  cpp: 'C++', c: 'C', h: 'C/C++', cs: 'C#',
+  go: 'Go', rs: 'Rust', rb: 'Ruby', php: 'PHP',
+  swift: 'Swift', dart: 'Dart', lua: 'Lua',
+  html: 'HTML', htm: 'HTML', css: 'CSS', scss: 'SCSS', sass: 'Sass', less: 'Less',
+  sql: 'SQL', graphql: 'GraphQL',
+  sh: 'Shell', bash: 'Bash', zsh: 'Zsh', ps1: 'PowerShell', bat: 'Batch',
+  r: 'R', matlab: 'MATLAB',
 };
 
-// Извлекаем год и месяц из даты
-function getDatePath(date: Date): { year: string; month: string } {
-  return {
-    year: date.getFullYear().toString(),
-    month: String(date.getMonth() + 1).padStart(2, '0'),
-  };
-}
+// Описания категорий
+export const CATEGORY_INFO: Record<string, { label: string; icon: string; color: string }> = {
+  video: { label: 'Видео', icon: '🎬', color: 'from-red-500 to-pink-500' },
+  audio: { label: 'Аудио', icon: '🎵', color: 'from-purple-500 to-indigo-500' },
+  image: { label: 'Фото', icon: '📷', color: 'from-emerald-500 to-teal-500' },
+  '3d': { label: '3D Графика', icon: '🧊', color: 'from-cyan-500 to-blue-500' },
+  docs: { label: 'Документы', icon: '📄', color: 'from-blue-500 to-indigo-500' },
+  text: { label: 'Текст', icon: '📝', color: 'from-slate-500 to-gray-500' },
+  presentation: { label: 'Презентации', icon: '📊', color: 'from-orange-500 to-red-500' },
+  tables: { label: 'Таблицы', icon: '📈', color: 'from-green-500 to-emerald-500' },
+  code: { label: 'Код', icon: '💻', color: 'from-violet-500 to-purple-500' },
+  data: { label: 'Данные', icon: '🗃️', color: 'from-amber-500 to-orange-500' },
+  design: { label: 'Дизайн', icon: '🎨', color: 'from-pink-500 to-rose-500' },
+  archives: { label: 'Архивы', icon: '📦', color: 'from-yellow-600 to-amber-600' },
+  fonts: { label: 'Шрифты', icon: '🔤', color: 'from-gray-500 to-slate-500' },
+  cad: { label: 'Чертежи', icon: '📐', color: 'from-sky-500 to-blue-500' },
+  executables: { label: 'Программы', icon: '⚙️', color: 'from-zinc-500 to-neutral-500' },
+  link: { label: 'Ссылки', icon: '🔗', color: 'from-blue-400 to-cyan-400' },
+  idea: { label: 'Идеи', icon: '💡', color: 'from-yellow-400 to-amber-400' },
+  other: { label: 'Другое', icon: '📎', color: 'from-gray-400 to-slate-400' },
+};
 
-// Извлекаем теги из имени файла
+// Извлечение тегов из имени файла
 function extractTags(name: string, type: string, ext: string): string[] {
   const tags: string[] = [];
   
-  // Разбиваем имя по разделителям
   const parts = name
-    .replace(/\.[^.]+$/, '') // убираем расширение
+    .replace(/\.[^.]+$/, '')
     .split(/[-_\s.]+/)
-    .filter(p => p.length > 1 && !/^\d+$/.test(p)) // убираем короткие и чисто числовые
+    .filter(p => p.length > 1 && !/^\d+$/.test(p))
     .map(p => p.toLowerCase());
   
-  tags.push(...parts.slice(0, 5)); // максимум 5 тегов из имени
-  
-  // Добавляем тип и расширение
+  tags.push(...parts.slice(0, 5));
   tags.push(type);
   if (ext) tags.push(ext);
   
-  // Добавляем язык если это код
   if (type === 'code' && LANG_MAP[ext]) {
     tags.push(LANG_MAP[ext].toLowerCase());
   }
   
-  return [...new Set(tags)]; // уникальные
+  return [...new Set(tags)];
 }
 
-// Генерируем описание из имени и содержимого
+// Генерация описания
 function generateDescription(name: string, content?: string): string {
   if (content && content.length > 10) {
-    // Берём первые 200 символов содержимого
-    const snippet = content.substring(0, 200).replace(/\n/g, ' ').trim();
-    return snippet + (content.length > 200 ? '...' : '');
+    return content.substring(0, 200).replace(/\n/g, ' ').trim();
   }
   
-  // Из имени файла
   const cleanName = name
     .replace(/\.[^.]+$/, '')
-    .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, l => l.toUpperCase());
+    .replace(/[-_]/g, ' ');
   
   return `Файл: ${cleanName}`;
 }
@@ -126,7 +199,8 @@ export function classify(input: ClassifyInput, rules: ClassificationRule[] = [])
   const { name, mime, content } = input;
   const ext = name.split('.').pop()?.toLowerCase() || '';
   const now = new Date();
-  const { year, month } = getDatePath(now);
+  const year = now.getFullYear().toString();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
   
   // 1. Проверяем пользовательские правила
   for (const rule of rules) {
@@ -150,74 +224,71 @@ export function classify(input: ClassifyInput, rules: ClassificationRule[] = [])
   }
   
   // 4. Если URL — ссылка
-  if (name.startsWith('http://') || name.startsWith('https://') || mime === 'text/x-url') {
+  if (name.startsWith('http://') || name.startsWith('https://')) {
     type = 'link';
   }
   
-  // 5. Если ничего не определили — идея/другое
+  // 5. Если ничего не определили
   if (!type) {
     type = mime?.startsWith('text/') ? 'idea' : 'other';
   }
   
-  // 6. Определяем папку
   const folder = getFolderForType(type, ext, year, month);
-  
-  // 7. Генерируем теги и описание
   const tags = extractTags(name, type, ext);
   const description = generateDescription(name, content);
   
   return { type, folder, tags, description };
 }
 
-// Определяем путь папки по типу
+// Путь папки по типу
 function getFolderForType(type: string, ext: string, year: string, month: string): string {
   switch (type) {
     case 'video': return `/Видео/${year}/${month}`;
+    case 'audio': return `/Аудио/${year}/${month}`;
     case 'image': return `/Фото/${year}/${month}`;
-    case 'table': return `/Таблицы/${year}`;
-    case 'doc': return `/Документы/${year}`;
+    case '3d': return `/3D/${year}`;
+    case 'docs': return `/Документы/${year}`;
+    case 'text': return `/Текст/${year}`;
+    case 'presentation': return `/Презентации/${year}`;
+    case 'tables': return `/Таблицы/${year}`;
     case 'code': return `/Код/${LANG_MAP[ext] || 'Другое'}`;
-    case 'link': return '/Сайты';
+    case 'data': return `/Данные/${year}`;
+    case 'design': return `/Дизайн/${year}`;
+    case 'archives': return `/Архивы/${year}`;
+    case 'fonts': return `/Шрифты`;
+    case 'cad': return `/Чертежи/${year}`;
+    case 'executables': return `/Программы`;
+    case 'link': return '/Ссылки';
     case 'idea': return '/Идеи';
-    case 'archive': return '/Архивы';
     default: return '/Другое';
   }
 }
 
-// Проверка: является ли файл изображением
+// Проверки типов
 export function isImage(mime: string): boolean {
   return mime?.startsWith('image/') || false;
 }
 
-// Проверка: является ли файл видео
 export function isVideo(mime: string): boolean {
   return mime?.startsWith('video/') || false;
 }
 
-// Проверка: является ли файл текстовым (можно прочитать содержимое)
+export function isAudio(mime: string): boolean {
+  return mime?.startsWith('audio/') || false;
+}
+
 export function isTextFile(mime: string, ext: string): boolean {
   if (mime?.startsWith('text/')) return true;
-  const textExts = ['json', 'xml', 'yaml', 'yml', 'toml', 'md', 'txt', 'html', 'css', 'js', 'ts', 'tsx', 'jsx', 'py', 'java', 'cpp', 'c', 'go', 'rs', 'rb', 'php', 'swift', 'kt', 'sql', 'sh', 'bash'];
+  const textExts = ['json', 'xml', 'yaml', 'yml', 'toml', 'md', 'txt', 'html', 'css', 'js', 'ts', 'tsx', 'jsx', 'py', 'java', 'cpp', 'c', 'go', 'rs', 'rb', 'php', 'swift', 'kt', 'sql', 'sh', 'bash', 'scss', 'less', 'graphql'];
   return textExts.includes(ext);
 }
 
-// Получаем иконку для типа файла
+// Иконка для типа
 export function getFileIcon(type: string): string {
-  const icons: Record<string, string> = {
-    video: '🎬',
-    image: '🖼️',
-    table: '📊',
-    doc: '📄',
-    code: '💻',
-    link: '🔗',
-    idea: '💡',
-    archive: '📦',
-    other: '📎',
-  };
-  return icons[type] || '📎';
+  return CATEGORY_INFO[type]?.icon || '📎';
 }
 
-// Форматирование размера файла
+// Форматирование размера
 export function formatSize(bytes: number): string {
   if (bytes === 0) return '0 Б';
   const k = 1024;
