@@ -7,6 +7,7 @@ import { FileGrid } from './components/FileGrid';
 import { FileDetails } from './components/FileDetails';
 import { UploadZone } from './components/UploadZone';
 import { PortfolioModal } from './components/PortfolioModal';
+import { InstallPWA } from './components/InstallPWA';
 
 export default function App() {
   const { theme, init, sidebarOpen, showUpload, showPortfolio, showDetails, setShowUpload, addFile } = useStore();
@@ -94,6 +95,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Компонент установки PWA */}
+      <InstallPWA />
     </div>
   );
 }
