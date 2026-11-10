@@ -171,7 +171,7 @@ export function Sidebar() {
       )}
 
       {/* Переключатель темы */}
-      <div className="mt-auto p-3 border-t border-inherit">
+      <div className="mt-auto p-3 border-t border-inherit space-y-1">
         <button
           onClick={toggleTheme}
           className={`w-full px-3 py-2 rounded-lg text-sm flex items-center gap-2 transition-colors ${

@@ -1,6 +1,7 @@
 // Верхняя панель — поиск, фильтры, кнопки загрузки и портфолио
 import { useState, useCallback, useRef } from 'react';
 import { useStore } from '../store';
+import { SyncPanel } from './SyncPanel';
 
 export function Topbar() {
   const {
@@ -11,6 +12,7 @@ export function Topbar() {
   } = useStore();
   
   const [localQuery, setLocalQuery] = useState(searchQuery);
+  const [showSync, setShowSync] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
   const isDark = theme === 'dark';
 
@@ -142,6 +144,35 @@ export function Topbar() {
       >
         <span>📋</span> Портфолио
       </button>
+
+      <button
+        onClick={() => setShowSync(true)}
+        className={`px-4 py-2 rounded-lg font-medium transition-colors text-sm flex items-center gap-1 ${
+          isDark ? 'bg-slate-700 hover:bg-slate-600 text-slate-200' : 'bg-slate-200 hover:bg-slate-300 text-slate-700'
+        }`}
+      >
+        <span>🔄</span> Синхронизация
+      </button>
+
+      {/* Модальное окно синхронизации */}
+      {showSync && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowSync(false)}>
+          <div className={`max-w-lg w-full mx-4 rounded-2xl shadow-2xl p-6 ${isDark ? 'bg-slate-800' : 'bg-white'}`} onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                🔄 Синхронизация
+              </h2>
+              <button
+                onClick={() => setShowSync(false)}
+                className={`p-1 rounded ${isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+              >
+                ✕
+              </button>
+            </div>
+            <SyncPanel />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
