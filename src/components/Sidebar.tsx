@@ -1,10 +1,11 @@
-// Боковая панель — дерево папок, коллекции тегов, переключатель темы
+// Боковая панель с иконками-черепами
 import { useStore } from '../store';
 import { CATEGORY_INFO } from '../lib/classifier';
+import { getSkullIcon } from './SkullIcons';
 
 export function Sidebar() {
   const {
-    theme, toggleTheme, getFolders, getAllTags, files,
+    theme, getFolders, getAllTags, files,
     filterFolder, setFilterFolder, filterType, setFilterType,
     filterFavorite, setFilterFavorite, setSidebarOpen,
   } = useStore();
@@ -12,7 +13,7 @@ export function Sidebar() {
   const folders = getFolders();
   const tags = getAllTags();
   
-  // Группируем папки по корневой категории
+  // Группируем папки
   const folderTree: Record<string, string[]> = {};
   folders.forEach(f => {
     const parts = f.split('/').filter(Boolean);
@@ -29,24 +30,37 @@ export function Sidebar() {
     typeCounts[f.type] = (typeCounts[f.type] || 0) + 1;
   });
 
-  const isDark = theme === 'dark';
-
   return (
-    <aside className={`sidebar scrollbar-thin ${isDark ? 'bg-slate-900/95 border-slate-700/50' : 'bg-white/95 border-slate-200'} backdrop-blur-xl`}>
+    <aside className="sidebar scrollbar-thin">
       {/* Логотип */}
-      <div className={`p-5 flex items-center gap-3 border-b ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xl shadow-lg shadow-indigo-500/30">
-          🗄️
+      <div className="p-5 flex items-center gap-3 border-b border-purple-500/20">
+        <div className="relative">
+          <div className="absolute inset-0 blur-xl bg-purple-500/50 rounded-full" />
+          <svg width="40" height="40" viewBox="0 0 100 100" className="relative animate-neon-pulse">
+            <defs>
+              <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a855f7" />
+                <stop offset="100%" stopColor="#6366f1" />
+              </linearGradient>
+            </defs>
+            <path d="M50 15 C30 15 18 30 18 50 C18 62 22 70 28 75 L28 82 L36 82 L36 88 L44 88 L44 82 L56 82 L56 88 L64 88 L64 82 L72 82 L72 75 C78 70 82 62 82 50 C82 30 70 15 50 15 Z" 
+              fill="url(#logoGrad)" stroke="#c4b5fd" strokeWidth="2" />
+            <ellipse cx="38" cy="48" rx="7" ry="8" fill="#07060d" />
+            <ellipse cx="62" cy="48" rx="7" ry="8" fill="#07060d" />
+            <circle cx="38" cy="48" r="3" fill="#ec4899" className="animate-eye-glow" />
+            <circle cx="62" cy="48" r="3" fill="#ec4899" className="animate-eye-glow" />
+            <path d="M50 58 L46 68 L54 68 Z" fill="#07060d" />
+          </svg>
         </div>
         <div className="flex-1">
-          <h1 className={`text-lg font-bold bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent`}>
-            MyVault
+          <h1 className="text-lg font-black bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            MYVAULT
           </h1>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Моё Хранилище</p>
+          <p className="text-xs text-purple-400/60 font-mono">☠ SKULL STORAGE ☠</p>
         </div>
         <button
           onClick={() => setSidebarOpen(false)}
-          className={`p-1.5 rounded-lg transition-colors ${isDark ? 'hover:bg-slate-700 text-slate-400' : 'hover:bg-slate-100 text-slate-500'}`}
+          className="p-2 rounded-lg hover:bg-purple-500/20 text-purple-400 transition-colors"
         >
           ✕
         </button>
@@ -58,22 +72,28 @@ export function Sidebar() {
           onClick={() => { setFilterType(''); setFilterFolder(''); }}
           className={`w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-all ${
             !filterType && !filterFolder
-              ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border border-indigo-500/30'
-              : (isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50')
+              ? 'bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-purple-200 border border-purple-500/50 glow-purple'
+              : 'text-slate-300 hover:bg-purple-500/10'
           }`}
         >
-          <span className="text-lg">📁</span>
-          <span className="flex-1 font-medium">Все файлы</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${
-            isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600'
-          }`}>{files.length}</span>
+          <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+            <path d="M50 15 C30 15 18 30 18 50 C18 62 22 70 28 75 L28 82 L36 82 L36 88 L44 88 L44 82 L56 82 L56 88 L64 88 L64 82 L72 82 L72 75 C78 70 82 62 82 50 C82 30 70 15 50 15 Z" 
+              fill="#7c3aed" stroke="#c4b5fd" strokeWidth="2" />
+            <ellipse cx="38" cy="48" rx="6" ry="7" fill="#07060d" />
+            <ellipse cx="62" cy="48" rx="6" ry="7" fill="#07060d" />
+            <path d="M50 58 L46 68 L54 68 Z" fill="#07060d" />
+          </svg>
+          <span className="flex-1 font-semibold">Все файлы</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30">
+            {files.length}
+          </span>
         </button>
       </div>
 
       {/* Категории */}
       <div className="px-3 pb-2">
-        <h3 className={`text-xs font-semibold uppercase tracking-wider mb-2 px-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-          Категории
+        <h3 className="text-xs font-bold uppercase tracking-wider mb-2 px-3 text-purple-400/60 font-mono">
+          ☠ КАТЕГОРИИ
         </h3>
         <div className="space-y-0.5 max-h-[40vh] overflow-y-auto scrollbar-thin">
           {Object.entries(CATEGORY_INFO).map(([type, info]) => {
@@ -86,15 +106,18 @@ export function Sidebar() {
                 onClick={() => { setFilterType(type); setFilterFolder(''); }}
                 className={`w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-3 transition-all ${
                   filterType === type
-                    ? `bg-gradient-to-r ${info.color} bg-opacity-20 text-white shadow-lg`
-                    : (isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50')
+                    ? `bg-gradient-to-r ${info.color} text-white shadow-lg`
+                    : 'text-slate-300 hover:bg-purple-500/10'
                 }`}
+                style={filterType === type ? { boxShadow: `0 0 20px ${info.neon}40` } : {}}
               >
-                <span className="text-lg">{info.icon}</span>
+                <div className="w-6 h-6 flex items-center justify-center">
+                  {getSkullIcon(type, 24)}
+                </div>
                 <span className="flex-1 font-medium">{info.label}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600'
-                }`}>{count}</span>
+                <span className="text-xs px-2 py-0.5 rounded-full bg-black/30 text-white/80">
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -107,15 +130,13 @@ export function Sidebar() {
           onClick={() => setFilterFavorite(!filterFavorite)}
           className={`w-full text-left px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-all ${
             filterFavorite
-              ? 'bg-gradient-to-r from-yellow-500/20 to-amber-500/20 text-yellow-400 border border-yellow-500/30'
-              : (isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50')
+              ? 'bg-gradient-to-r from-yellow-600/30 to-amber-600/30 text-yellow-200 border border-yellow-500/50'
+              : 'text-slate-300 hover:bg-purple-500/10'
           }`}
         >
-          <span className="text-lg">⭐</span>
-          <span className="flex-1 font-medium">Избранное</span>
-          <span className={`text-xs px-2 py-0.5 rounded-full ${
-            isDark ? 'bg-slate-700 text-slate-400' : 'bg-slate-200 text-slate-600'
-          }`}>
+          <span className="text-xl">⭐</span>
+          <span className="flex-1 font-semibold">Избранное</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-500/20 text-yellow-300">
             {files.filter(f => f.isFavorite).length}
           </span>
         </button>
@@ -123,9 +144,9 @@ export function Sidebar() {
 
       {/* Папки */}
       {folders.length > 0 && (
-        <div className={`px-3 py-2 border-t ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-          <h3 className={`text-xs font-semibold uppercase tracking-wider mb-2 px-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Папки
+        <div className="px-3 py-2 border-t border-purple-500/20">
+          <h3 className="text-xs font-bold uppercase tracking-wider mb-2 px-3 text-purple-400/60 font-mono">
+            📂 ПАПКИ
           </h3>
           <div className="space-y-0.5 max-h-40 overflow-y-auto scrollbar-thin">
             {Object.entries(folderTree).map(([root, subs]) => (
@@ -134,13 +155,13 @@ export function Sidebar() {
                   onClick={() => setFilterFolder(filterFolder === root ? '' : root)}
                   className={`w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-2 transition-all ${
                     filterFolder === root
-                      ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400'
-                      : (isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50')
+                      ? 'bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-purple-200'
+                      : 'text-slate-300 hover:bg-purple-500/10'
                   }`}
                 >
                   <span className="text-base">📂</span>
                   <span className="flex-1 truncate font-medium">{root}</span>
-                  <span className={`text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <span className="text-xs text-purple-400/60">
                     {filterFolder === root ? '▾' : '▸'}
                   </span>
                 </button>
@@ -150,8 +171,8 @@ export function Sidebar() {
                     onClick={() => setFilterFolder(filterFolder === sub ? '' : sub)}
                     className={`w-full text-left pl-10 pr-3 py-1.5 rounded-lg text-xs transition-all ${
                       filterFolder === sub
-                        ? (isDark ? 'text-indigo-400 bg-indigo-500/10' : 'text-indigo-600 bg-indigo-50')
-                        : (isDark ? 'text-slate-400 hover:text-slate-300 hover:bg-slate-800' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50')
+                        ? 'text-purple-300 bg-purple-500/10'
+                        : 'text-slate-400 hover:text-slate-300 hover:bg-purple-500/10'
                     }`}
                   >
                     {sub.split('/').pop()}
@@ -165,17 +186,15 @@ export function Sidebar() {
 
       {/* Теги */}
       {tags.length > 0 && (
-        <div className={`px-3 py-2 border-t ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-          <h3 className={`text-xs font-semibold uppercase tracking-wider mb-2 px-3 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-            Теги
+        <div className="px-3 py-2 border-t border-purple-500/20">
+          <h3 className="text-xs font-bold uppercase tracking-wider mb-2 px-3 text-purple-400/60 font-mono">
+            🏷️ ТЕГИ
           </h3>
           <div className="flex flex-wrap gap-1.5 px-3 max-h-32 overflow-y-auto scrollbar-thin">
             {tags.slice(0, 30).map(tag => (
               <span
                 key={tag}
-                className={`tag cursor-pointer hover:scale-105 transition-transform ${
-                  isDark ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }`}
+                className="tag cursor-pointer hover:scale-105 transition-transform"
               >
                 #{tag}
               </span>
@@ -184,17 +203,12 @@ export function Sidebar() {
         </div>
       )}
 
-      {/* Переключатель темы */}
-      <div className={`mt-auto p-3 border-t ${isDark ? 'border-slate-700/50' : 'border-slate-200'}`}>
-        <button
-          onClick={toggleTheme}
-          className={`w-full px-3 py-2.5 rounded-xl text-sm flex items-center gap-3 transition-all ${
-            isDark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50'
-          }`}
-        >
-          <span className="text-lg">{isDark ? '☀️' : '🌙'}</span>
-          <span className="font-medium">{isDark ? 'Светлая тема' : 'Тёмная тема'}</span>
-        </button>
+      {/* Нижний блок */}
+      <div className="mt-auto p-3 border-t border-purple-500/20">
+        <div className="text-center text-xs text-purple-400/40 font-mono">
+          <p>☠ RISE FROM THE GRAVE ☠</p>
+          <p className="mt-1">v1.0.0</p>
+        </div>
       </div>
     </aside>
   );

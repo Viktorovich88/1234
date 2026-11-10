@@ -138,26 +138,26 @@ const LANG_MAP: Record<string, string> = {
   r: 'R', matlab: 'MATLAB',
 };
 
-// Описания категорий
-export const CATEGORY_INFO: Record<string, { label: string; icon: string; color: string }> = {
-  video: { label: 'Видео', icon: '🎬', color: 'from-red-500 to-pink-500' },
-  audio: { label: 'Аудио', icon: '🎵', color: 'from-purple-500 to-indigo-500' },
-  image: { label: 'Фото', icon: '📷', color: 'from-emerald-500 to-teal-500' },
-  '3d': { label: '3D Графика', icon: '🧊', color: 'from-cyan-500 to-blue-500' },
-  docs: { label: 'Документы', icon: '📄', color: 'from-blue-500 to-indigo-500' },
-  text: { label: 'Текст', icon: '📝', color: 'from-slate-500 to-gray-500' },
-  presentation: { label: 'Презентации', icon: '📊', color: 'from-orange-500 to-red-500' },
-  tables: { label: 'Таблицы', icon: '📈', color: 'from-green-500 to-emerald-500' },
-  code: { label: 'Код', icon: '💻', color: 'from-violet-500 to-purple-500' },
-  data: { label: 'Данные', icon: '🗃️', color: 'from-amber-500 to-orange-500' },
-  design: { label: 'Дизайн', icon: '🎨', color: 'from-pink-500 to-rose-500' },
-  archives: { label: 'Архивы', icon: '📦', color: 'from-yellow-600 to-amber-600' },
-  fonts: { label: 'Шрифты', icon: '🔤', color: 'from-gray-500 to-slate-500' },
-  cad: { label: 'Чертежи', icon: '📐', color: 'from-sky-500 to-blue-500' },
-  executables: { label: 'Программы', icon: '⚙️', color: 'from-zinc-500 to-neutral-500' },
-  link: { label: 'Ссылки', icon: '🔗', color: 'from-blue-400 to-cyan-400' },
-  idea: { label: 'Идеи', icon: '💡', color: 'from-yellow-400 to-amber-400' },
-  other: { label: 'Другое', icon: '📎', color: 'from-gray-400 to-slate-400' },
+// Описания категорий (в стиле Dark Neon Skull)
+export const CATEGORY_INFO: Record<string, { label: string; icon: string; color: string; neon: string }> = {
+  video: { label: 'Видео', icon: '🎬', color: 'from-pink-600 to-purple-700', neon: '#ec4899' },
+  audio: { label: 'Аудио', icon: '🎵', color: 'from-purple-600 to-indigo-700', neon: '#a855f7' },
+  image: { label: 'Фото', icon: '📷', color: 'from-emerald-600 to-cyan-700', neon: '#10b981' },
+  '3d': { label: '3D Графика', icon: '🧊', color: 'from-cyan-600 to-blue-700', neon: '#06b6d4' },
+  docs: { label: 'Документы', icon: '📄', color: 'from-blue-600 to-indigo-700', neon: '#3b82f6' },
+  text: { label: 'Текст', icon: '📝', color: 'from-slate-600 to-gray-700', neon: '#94a3b8' },
+  presentation: { label: 'Презентации', icon: '📊', color: 'from-orange-600 to-red-700', neon: '#f97316' },
+  tables: { label: 'Таблицы', icon: '📈', color: 'from-green-600 to-emerald-700', neon: '#10b981' },
+  code: { label: 'Код', icon: '💻', color: 'from-violet-600 to-purple-800', neon: '#a855f7' },
+  data: { label: 'Данные', icon: '🗃️', color: 'from-amber-600 to-orange-700', neon: '#f59e0b' },
+  design: { label: 'Дизайн', icon: '🎨', color: 'from-pink-600 to-purple-700', neon: '#ec4899' },
+  archives: { label: 'Архивы', icon: '📦', color: 'from-yellow-700 to-amber-800', neon: '#eab308' },
+  fonts: { label: 'Шрифты', icon: '🔤', color: 'from-gray-600 to-slate-700', neon: '#cbd5e1' },
+  cad: { label: 'Чертежи', icon: '📐', color: 'from-sky-600 to-blue-700', neon: '#0ea5e9' },
+  executables: { label: 'Программы', icon: '⚙️', color: 'from-zinc-600 to-neutral-700', neon: '#a1a1aa' },
+  link: { label: 'Ссылки', icon: '🔗', color: 'from-blue-500 to-cyan-600', neon: '#38bdf8' },
+  idea: { label: 'Идеи', icon: '💡', color: 'from-yellow-500 to-amber-600', neon: '#fbbf24' },
+  other: { label: 'Другое', icon: '📎', color: 'from-gray-500 to-slate-600', neon: '#9ca3af' },
 };
 
 // Извлечение тегов из имени файла
